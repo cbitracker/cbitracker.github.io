@@ -1,3 +1,61 @@
+// -------------------- FIREBASE SETUP --------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// Your Firebase configuration (from your Firebase console)
+const firebaseConfig = {
+    apiKey: "AIzaSyC5LnMmP7ZuO4dHP-vJVL-G0E_zb6cY-54",
+    authDomain: "cbitracker-fff31.firebaseapp.com",
+    projectId: "cbitracker-fff31",
+    storageBucket: "cbitracker-fff31.firebasestorage.app",
+    messagingSenderId: "864316481569",
+    appId: "1:864316481569:web:ac2022ed33d860332e8360",
+    measurementId: "G-KVDZ670GFF"
+};
+
+// -------------------- FIRESTORE FUNCTIONS --------------------
+
+// Save to Firestore
+async function saveEntry(entry) {
+    await addDoc(collection(db, "entries"), entry);
+    console.log("✅ Entry saved to Firestore!");
+  }
+  
+  // Load all entries
+  async function loadEntries() {
+    const querySnapshot = await getDocs(collection(db, "entries"));
+    const entries = [];
+    querySnapshot.forEach((doc) => entries.push({ id: doc.id, ...doc.data() }));
+    return entries;
+  }
+  
+  // Update Firestore document
+  async function updateEntry(id, updatedData) {
+    const ref = doc(db, "entries", id);
+    await updateDoc(ref, updatedData);
+    console.log("✏️ Entry updated!");
+  }
+  
+  // Delete Firestore document
+  async function deleteEntry(id) {
+    await deleteDoc(doc(db, "entries", id));
+    console.log("🗑️ Entry deleted!");
+  }
+  
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
 // ========== Initialization ==========
 const form = document.getElementById("check-form");
 const tableBody = document.querySelector("#entries-table tbody");
@@ -12,12 +70,40 @@ const clearAllBtn = document.getElementById("clear-all");
 const importCSVInput = document.getElementById("import-csv");
 const exportCSVBtn = document.getElementById("export-csv");
 
-let entries = JSON.parse(localStorage.getItem("checkbookEntries")) || [];
+let entries = [];
+
+async function initializeData() {
+  const querySnapshot = await getDocs(collection(db, "entries"));
+  querySnapshot.forEach((doc) => {
+    entries.push({ id: doc.id, ...doc.data() });
+  });
+  renderTable();
+}
+
+initializeData();
 
 // ========== Utility Functions ==========
-function saveEntries() {
-  localStorage.setItem("checkbookEntries", JSON.stringify(entries));
-}
+async function saveEntries() {
+    // Clear all documents and reupload everything
+    const entriesRef = collection(db, "entries");
+  
+    // You can delete all old docs first if needed (optional)
+    const snapshot = await getDocs(entriesRef);
+    snapshot.forEach(async (docSnap) => {
+      await deleteDoc(doc(db, "entries", docSnap.id));
+    });
+  
+    // Add all new entries
+    for (const entry of entries) {
+      await addDoc(entriesRef, entry);
+    }
+
+    // Save locally as backup
+    localStorage.setItem("checkbookEntries", JSON.stringify(entries));
+  
+    console.log("✅ All entries saved to Firestore!");
+  }
+  
 
 function formatCurrency(num) {
   return parseFloat(num || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
@@ -101,7 +187,7 @@ function renderTable() {
 }
 
 // ========== Form Handling ==========
-form.addEventListener("submit", e => {
+form.addEventListener("submit", async e => {
   e.preventDefault();
   const entryId = document.getElementById("entry-id").value;
   const status = document.getElementById("status").value;
@@ -147,7 +233,7 @@ form.addEventListener("submit", e => {
     entries.push(newEntry);
   }
 
-  saveEntries();
+  await saveEntries();
   renderTable();
   form.reset();
   document.getElementById("entry-id").value = "";
@@ -202,13 +288,13 @@ function editEntry(index) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function deleteEntry(index) {
-  if (confirm("Delete this entry?")) {
-    entries.splice(index, 1);
-    saveEntries();
-    renderTable();
-  }
-}
+async function deleteEntry(index) {
+    if (confirm("Delete this entry?")) {
+      entries.splice(index, 1);
+      await saveEntries();
+      renderTable();
+    }
+  }  
 
 // ========== Search, Filter, Sort ==========
 searchInput.addEventListener("input", renderTable);
