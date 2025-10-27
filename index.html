@@ -157,28 +157,7 @@
   <footer>
     <!-- <small>Placeholders for any images. Data saved locally in your browser.</small> -->
   </footer>
-
-  <script type="module">
-    // Import Firebase core + Firestore
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
   
-    // Your configuration from Firebase console
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY_HERE",
-      authDomain: "cbitracker.firebaseapp.com",
-      projectId: "cbitracker",
-      storageBucket: "cbitracker.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    window.db = getFirestore(app); // make it globally accessible
-  </script>
-  
-  <!-- then load your main app.js -->
 <script src="app.js" type="module"></script>
 
 </body>

@@ -1,4 +1,5 @@
 // -------------------- FIREBASE SETUP --------------------
+import { db } from "./firebase-config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import {
   getFirestore,
@@ -9,17 +10,6 @@ import {
   deleteDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-// Your Firebase configuration (from your Firebase console)
-const firebaseConfig = {
-    apiKey: "AIzaSyC5LnMmP7ZuO4dHP-vJVL-G0E_zb6cY-54",
-    authDomain: "cbitracker-fff31.firebaseapp.com",
-    projectId: "cbitracker-fff31",
-    storageBucket: "cbitracker-fff31.firebasestorage.app",
-    messagingSenderId: "864316481569",
-    appId: "1:864316481569:web:ac2022ed33d860332e8360",
-    measurementId: "G-KVDZ670GFF"
-};
 
 // -------------------- FIRESTORE FUNCTIONS --------------------
 
@@ -45,10 +35,10 @@ async function saveEntry(entry) {
   }
   
   // Delete Firestore document
-  async function deleteEntry(id) {
+  async function deleteEntryFromFirestore(id) {
     await deleteDoc(doc(db, "entries", id));
     console.log("🗑️ Entry deleted!");
-  }
+  }  
   
 
 // Initialize Firebase
