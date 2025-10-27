@@ -318,7 +318,7 @@ document.getElementById("backup-file-input").addEventListener("change", function
         alert("❌ Invalid file format. Make sure this is a valid backup file.");
       }
     } catch (err) {
-      alert("❌ Error reading the backup file.");
+      alert("❌ Error with the backup file.");
     }
   };
   reader.readAsText(file);
