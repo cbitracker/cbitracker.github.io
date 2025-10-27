@@ -1,5 +1,4 @@
 // -------------------- FIREBASE SETUP --------------------
-import { db } from "./firebase-config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import {
   getFirestore,
@@ -10,6 +9,17 @@ import {
   deleteDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// Your Firebase configuration (from your Firebase console)
+const firebaseConfig = {
+    apiKey: "AIzaSyC5LnMmP7ZuO4dHP-vJVL-G0E_zb6cY-54",
+    authDomain: "cbitracker-fff31.firebaseapp.com",
+    projectId: "cbitracker-fff31",
+    storageBucket: "cbitracker-fff31.firebasestorage.app",
+    messagingSenderId: "864316481569",
+    appId: "1:864316481569:web:ac2022ed33d860332e8360",
+    measurementId: "G-KVDZ670GFF"
+};
 
 // -------------------- FIRESTORE FUNCTIONS --------------------
 
@@ -33,12 +43,12 @@ async function saveEntry(entry) {
     await updateDoc(ref, updatedData);
     console.log("✏️ Entry updated!");
   }
-
+  
   // Delete Firestore document
-  async function deleteEntryFromFirestore(id) {
+  async function deleteEntry(id) {
     await deleteDoc(doc(db, "entries", id));
     console.log("🗑️ Entry deleted!");
-  }  
+  }
   
 
 // Initialize Firebase
@@ -177,7 +187,7 @@ function renderTable() {
 }
 
 // ========== Form Handling ==========
-form.addEventListener("submit", async e => {
+form.addEventListener("submit", e => {
   e.preventDefault();
   const entryId = document.getElementById("entry-id").value;
   const status = document.getElementById("status").value;
@@ -279,12 +289,13 @@ function editEntry(index) {
 }
 
 async function deleteEntry(index) {
-    if (confirm("Delete this entry?")) {
-      entries.splice(index, 1);
-      await saveEntries();
-      renderTable();
-    }
-  }  
+  if (confirm("Delete this entry?")) {
+    entries.splice(index, 1);
+    await saveEntries();
+    renderTable();
+  }
+}
+
 
 // ========== Search, Filter, Sort ==========
 searchInput.addEventListener("input", renderTable);
