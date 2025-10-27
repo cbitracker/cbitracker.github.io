@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkbook Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <!-- <h1>Checkbook Tracker</h1> -->
+    <!-- <p class="muted">Track clearing date, check date, numbers, amounts, status, and remarks.</p> -->
+  </header>
+
+  <main class="container">
+    <section class="form-section card">
+      <h2 id="form-title">Add New Check</h2>
+      <form id="check-form">
+        <input type="hidden" id="entry-id" />
+
+        <div class="row">
+          <label>Clearing Date
+            <input id="clearing-date" type="date" />
+          </label>
+          <label>Check Date
+            <input id="check-date" type="date" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Check Number
+            <input id="check-number" type="text" required />
+          </label>
+          <label>Check Name
+            <input id="check-name" type="text" required />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Total Amount
+            <input id="total-amount" type="number" step="0.01" min="0" required />
+          </label>
+          <label>Actual Amount
+            <input id="actual-amount" type="number" step="0.01" min="0" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Client PO
+            <input id="client-po" type="text" />
+          </label>
+
+          <label>Category
+            <input id="category" type="text" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Sub-category
+            <input id="subcategory" type="text" />
+          </label>
+
+          <label>Check Status
+            <select id="status">
+              <option value="for releasing">For Releasing</option>
+              <option value="released">Released</option>
+              <option value="cleared">Cleared</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>          
+        </div>
+
+        <label>Remarks
+          <textarea id="remarks" rows="2" placeholder="Notes or remarks"></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" id="save-btn">Save</button>
+          <button type="button" id="clear-form">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="controls card">
+      <div class="row wrap">
+        <input id="search" type="search" placeholder="Search by name..." />
+        <select id="filter-status">
+            <option value="all">All statuses</option>
+            <option value="for releasing">For Releasing</option>
+            <option value="released">Released</option>
+            <option value="cleared">Cleared</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          
+
+        <select id="sort-by">
+          <option value="clearingDate-desc">Clearing Date ↓</option>
+          <option value="clearingDate-asc">Clearing Date ↑</option>
+          <option value="checkDate-desc">Check Date ↓</option>
+          <option value="checkDate-asc">Check Date ↑</option>
+          <option value="totalAmount-desc">Total Amount ↓</option>
+          <option value="totalAmount-asc">Total Amount ↑</option>
+        </select>
+
+        <button id="export-csv">Export CSV</button>
+
+        <label class="import-btn">
+            Import CSV
+            <input type="file" id="import-csv" accept=".csv" />
+        </label>
+
+        <button id="backup-data">Backup Data</button>
+        <button id="restore-data">Restore Data</button>
+        <input type="file" id="backup-file-input" accept=".json" style="display: none;" />
+
+        <button id="clear-all" class="danger">Clear All Data</button>
+
+      </div>
+
+      <div class="totals">
+        <strong>For Releasing Total (Total Amount):</strong> <span id="sum-total">0.00</span>
+        &nbsp; | &nbsp;
+        <strong>For Releasing Total (Actual Amount):</strong> <span id="sum-actual">0.00</span>
+        &nbsp; | &nbsp;
+        <strong>Displayed Entries Total (Total Amount):</strong> <span id="displayed-total">0.00</span>
+        &nbsp; | &nbsp;
+        <strong>Displayed Entries Total (Actual Amount):</strong> <span id="displayed-actual">0.00</span>
+        &nbsp; | &nbsp;
+        <strong>Entries Displayed:</strong> <span id="count-entries">0</span>
+      </div>           
+    </section>
+
+    <section class="table-section card">
+      <table id="entries-table">
+        <thead>
+          <tr>
+            <th>Clearing Date</th>
+            <th>Check Date</th>
+            <th>Check #</th>
+            <th>Payee</th>
+            <th>Category / Sub</th>
+            <th>Total</th>
+            <th>Actual</th>
+            <th>PO</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- <p class="muted small">Tip: Create a desktop shortcut to run this like an app (Chrome: More tools → Create shortcut → Open as window).</p> -->
+    </section>
+  </main>
+
+  <footer>
+    <!-- <small>Placeholders for any images. Data saved locally in your browser.</small> -->
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
